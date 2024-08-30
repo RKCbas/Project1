@@ -1,6 +1,6 @@
 package com.example.projecto1.classes
 
-//class Variables {
+class Variables {
 
     fun main(){
 
@@ -48,4 +48,4 @@ package com.example.projecto1.classes
         return x*y
     }
 
-//}
+}
