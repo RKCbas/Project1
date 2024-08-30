@@ -28,8 +28,8 @@ package com.example.projecto1.classes
         println("El peso es $peso")
         println("El genero es $gender")
         println("Es mayor: $isGreater")
-        println("El primer nombre es" + names[0])
-        println("El ultimo nombre es" + names[names.size-1])
+        println("El primer nombre es " + names[0])
+        println("El ultimo nombre es " + names[names.size-1])
 
         println(add())
 
