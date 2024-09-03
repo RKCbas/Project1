@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
                 }
                 Greeting(name = "World")
             }
-
+//test
 
 //            Projecto1Theme {
 //                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
