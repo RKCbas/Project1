@@ -18,6 +18,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,13 +31,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.Cyan
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role.Companion.Image
+import androidx.compose.ui.semantics.SemanticsProperties.ContentDescription
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,20 +51,22 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 //        enableEdgeToEdge()
         setContent {
-            Column (
-                modifier = Modifier.fillMaxSize(),
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
-            ){
+
+            ) {
 //                Text(text = "Hola Android!")
 //                ModifierExample()
 //                ModifierExample2()
 //                ModifierExample3()
                 CustomText()
                 Picture()
+                Content1()
             }
-
-
 
 
             //layouts
@@ -112,7 +120,7 @@ fun GreetingPreview() {
 
 //@Preview(showBackground = true)
 @Composable
-fun ModifierExample(){
+fun ModifierExample() {
     Column(
         modifier = Modifier
             .padding(24.dp)
@@ -124,7 +132,7 @@ fun ModifierExample(){
 
 //@Preview(showBackground = true)
 @Composable
-fun ModifierExample2(){
+fun ModifierExample2() {
     Column(
         modifier = Modifier
             .padding(24.dp)
@@ -137,7 +145,7 @@ fun ModifierExample2(){
 
 //@Preview(showBackground = true)
 @Composable
-fun ModifierExample3(){
+fun ModifierExample3() {
     Column(
         modifier = Modifier
             .fillMaxHeight()
@@ -146,8 +154,8 @@ fun ModifierExample3(){
             .background(Color.Cyan)
             .border(width = 2.dp, Color.Green)
             .width(200.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceEvenly
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Text(text = "Item 1")
         Text(text = "Item 2")
@@ -158,9 +166,9 @@ fun ModifierExample3(){
     }
 }
 
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
-fun CustomText(){
+fun CustomText() {
     Column {
         Text(
             stringResource(R.string.hello_world_text),
@@ -177,14 +185,14 @@ fun CustomText(){
     }
 }
 
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
-fun Picture(){
-    Column (
+fun Picture() {
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.Black)
-    ){
+    ) {
         Image(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -195,7 +203,82 @@ fun Picture(){
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun Content1() {
+    Card(
+        modifier = Modifier
+            .background(Color.LightGray)
+            .fillMaxWidth()
+            .padding(5.dp)
+    ) {
+        Text(
+            text = "This is a title",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .padding(10.dp)
+        )
+        Image(
+            modifier = Modifier.fillMaxWidth(),
+            painter = painterResource(id = R.drawable.andcat),
+            contentDescription = "ANDCAT LOGO",
+            contentScale = ContentScale.Crop
+        )
+        Text(
+            stringResource(id = R.string.text_card),
+            textAlign = TextAlign.Justify,
+            lineHeight = 18.sp,
+            modifier = Modifier
+                .padding(10.dp)
+        )
 
-fun clickAction(element:String = "Elemento") {
+
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun Content2() {
+    Card(
+        modifier = Modifier
+            .background(Color.LightGray)
+            .fillMaxWidth()
+            .padding(5.dp)
+    ) {
+        Row {
+            Column (verticalArrangement = Arrangement.Center,) {
+                Image(
+                    modifier = Modifier
+                        .width(200.dp)
+                        .padding(0.dp, 10.dp),
+
+                    painter = painterResource(id = R.drawable.andcat),
+                    contentDescription = "ANDCAT LOGO",
+                    contentScale = ContentScale.Fit
+                )
+            }
+            Column {
+                Text(
+                    text = "This is a title",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(10.dp)
+                )
+                Text(
+                    stringResource(id = R.string.text_card),
+                    textAlign = TextAlign.Justify,
+                    fontSize = 11.sp,
+                    lineHeight = 11.sp,
+                    modifier = Modifier
+                        .padding(10.dp)
+                )
+            }
+        }
+    }
+}
+
+fun clickAction(element: String = "Elemento") {
     println("$element Clicked")
 }
