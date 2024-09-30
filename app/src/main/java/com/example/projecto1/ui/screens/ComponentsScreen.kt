@@ -3,14 +3,21 @@ package com.example.projecto1.ui.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -19,12 +26,17 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.InputChip
+import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.LargeFloatingActionButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Slider
 import androidx.compose.material3.SmallFloatingActionButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDrawerState
@@ -36,6 +48,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
@@ -117,6 +131,45 @@ fun ComponentsScreen(navController: NavController) {
                         }
                     }
                 )
+                NavigationDrawerItem(
+                    label = { Text(text = "Progress") },
+                    selected = false,
+                    onClick = {
+                        component = "Progress"
+                        scope.launch {
+//                            drawerState.apply {
+//                                close()
+//                            }
+                            drawerState.close()
+                        }
+                    }
+                )
+                NavigationDrawerItem(
+                    label = { Text(text = "Sliders") },
+                    selected = false,
+                    onClick = {
+                        component = "Sliders"
+                        scope.launch {
+//                            drawerState.apply {
+//                                close()
+//                            }
+                            drawerState.close()
+                        }
+                    }
+                )
+                NavigationDrawerItem(
+                    label = { Text(text = "Switches") },
+                    selected = false,
+                    onClick = {
+                        component = "Switches"
+                        scope.launch {
+//                            drawerState.apply {
+//                                close()
+//                            }
+                            drawerState.close()
+                        }
+                    }
+                )
             }
         }
     ) {
@@ -141,6 +194,18 @@ fun ComponentsScreen(navController: NavController) {
 
                 "Chips" -> {
                     Chips()
+                }
+
+                "Progress" -> {
+                    Progress()
+                }
+
+                "Sliders" -> {
+                    Sliders()
+                }
+
+                "Switches" -> {
+                    Switches()
                 }
             }
         }
@@ -252,5 +317,117 @@ fun Chips() {
             }
 
         )
+        InputChipExample(text = "Dismiss", {})
+    }
+}
+
+@Composable
+fun  InputChipExample(
+    text:String,
+    onDismiss: () -> Unit
+){
+    var enable by remember { mutableStateOf(true) }
+    if (!enable) return
+
+    InputChip(
+        selected = enable,
+        onClick = {
+            onDismiss()
+            enable = !enable
+        },
+        label = { Text(text = text) },
+        avatar = {
+            Icon(
+                Icons.Filled.Person,
+                contentDescription = "Person Icon",
+                Modifier.size(InputChipDefaults.AvatarSize)
+            )
+        },
+        trailingIcon = {
+            Icon(
+                Icons.Filled.Close,
+                contentDescription = "Person Icon",
+                Modifier.size(InputChipDefaults.AvatarSize)
+            )
+        }
+    )
+
+}
+
+//@Preview(showBackground = true)
+@Composable
+fun Progress() {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        LinearProgressIndicator(
+            modifier = Modifier.fillMaxWidth(),
+        )
+        CircularProgressIndicator(
+            modifier = Modifier.width(64.dp)
+        )
+    }
+}
+
+//@Preview(showBackground = true)
+@Composable
+fun Sliders() {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        var sliderPosition by remember { mutableStateOf(50f) }
+        Column {
+            Slider(
+                value = sliderPosition,
+                onValueChange = {sliderPosition = it},
+                steps = 9,
+                valueRange = 0f..100f
+            )
+            Text(
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+                text = sliderPosition.toString(),
+            )
+        }
+    }
+}
+
+
+//@Preview(showBackground = true)
+@Composable
+fun Switches() {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        var checked by remember { mutableStateOf(true) }
+        Switch(checked = checked, onCheckedChange = {checked = it})
+
+        var checked2 by remember { mutableStateOf(true) }
+        Switch(
+            checked = checked2,
+            onCheckedChange = {checked2 = it},
+            thumbContent = if (checked2){
+                {
+                    Icon(
+                        Icons.Filled.Check,
+                        contentDescription = "Person Icon",
+                        Modifier.size(InputChipDefaults.AvatarSize)
+                    )
+                }
+            }else{
+                null
+            }
+
+        )
+
+        var checked3 by remember { mutableStateOf(true) }
+        Checkbox(checked = checked3, onCheckedChange = {checked3 = it})
+
     }
 }
