@@ -57,13 +57,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 //import androidx.navigation.compose.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.projecto1.ui.screens.ComponentsScreen
 import com.example.projecto1.ui.screens.HomeScreen
 import com.example.projecto1.ui.screens.MenuScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
+        enableEdgeToEdge()
         setContent {
             ComposeMultiScreenApp()
 
@@ -137,14 +138,14 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
         modifier = modifier
     )
 }
-
+*/
 //@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Projecto1Theme {
-        Greeting("Sebastián")
-    }
-}
+//@Composable
+//fun GreetingPreview() {
+//    Projecto1Theme {
+//        Greeting("Sebastián")
+//    }
+//}
 
 //@Preview(showBackground = true)
 @Composable
@@ -230,8 +231,8 @@ fun Picture() {
         )
     }
 }
-
-//@Preview(showBackground = true)
+/*
+@Preview(showBackground = true)
 @Composable
 fun Content1() {
     Card(
@@ -265,7 +266,7 @@ fun Content1() {
     }
 }
 
-//@Preview(showBackground = true)
+@Preview(showBackground = true)
 @Composable
 fun Content2() {
     Card(
@@ -275,8 +276,10 @@ fun Content2() {
             .padding(5.dp)
     ) {
         Row {
-            Column (verticalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxHeight()) {
+            Column (
+                verticalArrangement = Arrangement.Center
+                //modifier = Modifier.fillMaxHeight()
+            ) {
                 Image(
                     modifier = Modifier
                         .width(200.dp)
@@ -388,12 +391,13 @@ fun BoxExample2(){
         )
     }
 }
+*/
 //git test2
 
 fun clickAction(element: String = "Elemento") {
     println("$element Clicked")
 }
-*/
+
 
 @Preview(showBackground = true)
 @Composable
@@ -409,6 +413,6 @@ fun SetupNavGraph (navController: NavHostController){
     NavHost(navController = navController, startDestination = "menu"){
         composable("menu"){ MenuScreen(navController) }
         composable("home"){ HomeScreen(navController) }
-
+        composable("components"){ ComponentsScreen(navController)}
     }
 }
