@@ -25,9 +25,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
@@ -85,6 +89,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -99,6 +104,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.navigation.NavController
 import com.example.projecto1.R
+import com.example.projecto1.data.model.MenuModel
 import com.example.projecto1.data.model.PostModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -108,213 +114,52 @@ import java.util.Locale
 
 @Composable
 fun ComponentsScreen(navController: NavController) {
-    var component by remember { mutableStateOf("") }
+    var component by rememberSaveable { mutableStateOf("") }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     ModalNavigationDrawer(
         drawerState = drawerState, // current state of drawer
         //drawer content
         drawerContent = {
+            var menuOptions = arrayOf(
+                MenuModel(3,"Buttons", "Buttons", Icons.Filled.Add),
+                MenuModel(4,"Floating Buttons", "FloatingButtons", Icons.Filled.AccountBox),
+                MenuModel(5,"Chips", "Chips", Icons.Filled.ShoppingCart),
+                MenuModel(6,"Progress", "Progress", Icons.Filled.Check),
+                MenuModel(7,"Sliders", "Sliders", Icons.Filled.Close),
+                MenuModel(8,"Switches", "Switches", Icons.Filled.Call),
+                MenuModel(9,"Badges", "Badges", Icons.Filled.CheckCircle),
+                MenuModel(10,"Time Pickers", "TimePickers", Icons.Filled.Create),
+                MenuModel(11,"Date Pickers", "DatePickers", Icons.Filled.ShoppingCart),
+                MenuModel(12,"Snack Bar", "SnackBar", Icons.Filled.Home),
+                MenuModel(13,"Alert Dialog", "AlertDialog", Icons.Filled.DateRange),
+                MenuModel(14,"Bars", "Bars", Icons.Filled.Person)
+
+            )
             ModalDrawerSheet {
                 Text(text = "Menu", modifier = Modifier.padding(16.dp))
                 HorizontalDivider(modifier = Modifier.padding(bottom = 5.dp))
-                NavigationDrawerItem(
-                    label = { Text(text = "Content 1") },
-                    selected = false,
-                    onClick = {
-                        component = "Content1"
-                        scope.launch {
-                            drawerState.apply {
-                                close()
-                            }
-                            //drawerState.close()
-                        }
+                LazyColumn {
+                    items(menuOptions) {item ->
+                        NavigationDrawerItem(
+                            icon = { Icon(item.icon, contentDescription = "") },
+                            label = { Text(item.title) },
+                            selected = false,
+                            onClick = {
+                                component = item.option
+                                scope.launch {
+                                    drawerState.close()
+                                }
+                            })
                     }
-                )
-                NavigationDrawerItem(
-                    label = { Text(text = "Content 2") },
-                    selected = false,
-                    onClick = {
-                        component = "Content2"
-                        scope.launch {
-//                            drawerState.apply {
-//                                close()
-//                            }
-                            drawerState.close()
-                        }
-                    }
-                )
-                NavigationDrawerItem(
-                    label = { Text(text = "Buttons") },
-                    selected = false,
-                    onClick = {
-                        component = "Buttons"
-                        scope.launch {
-//                            drawerState.apply {
-//                                close()
-//                            }
-                            drawerState.close()
-                        }
-                    }
-                )
-                NavigationDrawerItem(
-                    label = { Text(text = "Floating Buttons") },
-                    selected = false,
-                    onClick = {
-                        component = "FloatingButtons"
-                        scope.launch {
-//                            drawerState.apply {
-//                                close()
-//                            }
-                            drawerState.close()
-                        }
-                    }
-                )
-                NavigationDrawerItem(
-                    label = { Text(text = "Chips") },
-                    selected = false,
-                    onClick = {
-                        component = "Chips"
-                        scope.launch {
-//                            drawerState.apply {
-//                                close()
-//                            }
-                            drawerState.close()
-                        }
-                    }
-                )
-                NavigationDrawerItem(
-                    label = { Text(text = "Progress") },
-                    selected = false,
-                    onClick = {
-                        component = "Progress"
-                        scope.launch {
-//                            drawerState.apply {
-//                                close()
-//                            }
-                            drawerState.close()
-                        }
-                    }
-                )
-                NavigationDrawerItem(
-                    label = { Text(text = "Sliders") },
-                    selected = false,
-                    onClick = {
-                        component = "Sliders"
-                        scope.launch {
-//                            drawerState.apply {
-//                                close()
-//                            }
-                            drawerState.close()
-                        }
-                    }
-                )
-                NavigationDrawerItem(
-                    label = { Text(text = "Switches") },
-                    selected = false,
-                    onClick = {
-                        component = "Switches"
-                        scope.launch {
-//                            drawerState.apply {
-//                                close()
-//                            }
-                            drawerState.close()
-                        }
-                    }
-                )
-                NavigationDrawerItem(
-                    label = { Text(text = "Badges") },
-                    selected = false,
-                    onClick = {
-                        component = "Badges"
-                        scope.launch {
-//                            drawerState.apply {
-//                                close()
-//                            }
-                            drawerState.close()
-                        }
-                    }
-                )
-                NavigationDrawerItem(
-                    label = { Text(text = "Time Pickers") },
-                    selected = false,
-                    onClick = {
-                        component = "TimePickers"
-                        scope.launch {
-//                            drawerState.apply {
-//                                close()
-//                            }
-                            drawerState.close()
-                        }
-                    }
-                )
-                NavigationDrawerItem(
-                    label = { Text(text = "Date Pickers") },
-                    selected = false,
-                    onClick = {
-                        component = "DatePickers"
-                        scope.launch {
-//                            drawerState.apply {
-//                                close()
-//                            }
-                            drawerState.close()
-                        }
-                    }
-                )
-                NavigationDrawerItem(
-                    label = { Text(text = "SnackBar") },
-                    selected = false,
-                    onClick = {
-                        component = "SnackBar"
-                        scope.launch {
-//                            drawerState.apply {
-//                                close()
-//                            }
-                            drawerState.close()
-                        }
-                    }
-                )
-                NavigationDrawerItem(
-                    label = { Text(text = "Alert Dialog") },
-                    selected = false,
-                    onClick = {
-                        component = "AlertDialog"
-                        scope.launch {
-//                            drawerState.apply {
-//                                close()
-//                            }
-                            drawerState.close()
-                        }
-                    }
-                )
-                NavigationDrawerItem(
-                    label = { Text(text = "Bars") },
-                    selected = false,
-                    onClick = {
-                        component = "Bars"
-                        scope.launch {
-//                            drawerState.apply {
-//                                close()
-//                            }
-                            drawerState.close()
-                        }
-                    }
-                )
+                }
             }
         }
     ) {
         //Screen Content
         Column {
             when (component) {
-                "Content1" -> {
-                    Content1()
-                }
-
-                "Content2" -> {
-                    Content2()
-                }
-
-                "Butons" -> {
+                "Buttons" -> {
                     Buttons()
                 }
 
@@ -952,3 +797,4 @@ fun Posts(arrayPosts:Array<PostModel>) {
         }
     }
 }
+
