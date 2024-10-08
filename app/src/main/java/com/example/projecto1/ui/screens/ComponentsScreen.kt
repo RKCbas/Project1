@@ -1,8 +1,5 @@
 package com.example.projecto1.ui.screens
 
-import android.app.AlertDialog
-import android.widget.DatePicker
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,9 +16,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
@@ -40,7 +39,6 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
@@ -51,7 +49,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -95,7 +92,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -106,6 +103,7 @@ import androidx.navigation.NavController
 import com.example.projecto1.R
 import com.example.projecto1.data.model.MenuModel
 import com.example.projecto1.data.model.PostModel
+import com.example.projecto1.ui.Components.PostCard
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -682,7 +680,7 @@ fun AlertDialogs() {
 
 @Preview(showBackground = true)
 @Composable
-fun Bars() {
+private fun Bars() {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -706,11 +704,16 @@ fun Bars() {
             Icon(Icons.Filled.Settings, contentDescription = "", tint = Color.White)
         }
         var post = arrayOf(
-            PostModel(1,"Title 1", "Text 1"),
-            PostModel(2,"Title 2", "Text 2"),
-            PostModel(3,"Title 3", "Text 3"),
-            PostModel(4,"Title 4", "Text 4"),
-            PostModel(5,"Title 5", "Text 5")
+            PostModel(1,"Title 1", "Text 1", painterResource(id = R.drawable.andcat)),
+            PostModel(2,"Title 2", "Text 2", painterResource(id = R.drawable.andcat)),
+            PostModel(3,"Title 3", "Text 3", painterResource(id = R.drawable.andcat)),
+            PostModel(4,"Title 4", "Text 4", painterResource(id = R.drawable.andcat)),
+            PostModel(5,"Title 5", "Text 5", painterResource(id = R.drawable.andcat)),
+            PostModel(6,"Title 6", "Text 6", painterResource(id = R.drawable.andcat)),
+            PostModel(7,"Title 7", "Text 7", painterResource(id = R.drawable.andcat)),
+            PostModel(8,"Title 8", "Text 8", painterResource(id = R.drawable.andcat)),
+            PostModel(9,"Title 9", "Text 9", painterResource(id = R.drawable.andcat)),
+            PostModel(10,"Title 10", "Text 10", painterResource(id = R.drawable.andcat)),
         )
         Column(
             modifier = Modifier
@@ -718,7 +721,9 @@ fun Bars() {
                 .padding(10.dp, 90.dp, 10.dp, 10.dp)
                 .fillMaxSize()
         ) {
-            Posts(arrayPosts = post)
+            //Posts(arrayPosts = post)
+            //PostCard(1,"This is card title", "This is card text", painterResource(id = R.drawable.andcat))
+            PostsGrid(arrayPosts = post)
         }
         Row (
             modifier= Modifier
@@ -782,18 +787,25 @@ fun Bars() {
 
 @Composable
 fun Posts(arrayPosts:Array<PostModel>) {
-    LazyColumn(
+    LazyRow(
         modifier = Modifier
             .fillMaxSize()
     ){
         items(arrayPosts){ post->
-            Text(
-                text = post.text,
-                color = Color.White,
-                fontSize = 16.sp
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            HorizontalDivider(thickness = 2.dp)
+            PostCard(id = post.id, title = post.title, text = post.text, image = post.image)
+        }
+    }
+}
+
+@Composable
+fun PostsGrid(arrayPosts:Array<PostModel>){
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 128.dp),
+        modifier = Modifier
+            .fillMaxSize()
+    ){
+        items(arrayPosts){ post->
+            PostCard(id = post.id, title = post.title, text = post.text, image = post.image)
         }
     }
 }
