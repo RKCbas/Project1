@@ -78,6 +78,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimeInput
 import androidx.compose.material3.TimePicker
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberTimePickerState
@@ -100,10 +101,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.navigation.NavController
+import androidx.window.core.layout.WindowHeightSizeClass
+import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.projecto1.R
 import com.example.projecto1.data.model.MenuModel
 import com.example.projecto1.data.model.PostModel
 import com.example.projecto1.ui.Components.PostCard
+import com.example.projecto1.ui.Components.PostCardCompact
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -131,7 +135,8 @@ fun ComponentsScreen(navController: NavController) {
                 MenuModel(11,"Date Pickers", "DatePickers", Icons.Filled.ShoppingCart),
                 MenuModel(12,"Snack Bar", "SnackBar", Icons.Filled.Home),
                 MenuModel(13,"Alert Dialog", "AlertDialog", Icons.Filled.DateRange),
-                MenuModel(14,"Bars", "Bars", Icons.Filled.Person)
+                MenuModel(14,"Bars", "Bars", Icons.Filled.Person),
+                MenuModel(15,"Adaptive", "Adaptive", Icons.Filled.Menu)
 
             )
             ModalDrawerSheet {
@@ -200,6 +205,9 @@ fun ComponentsScreen(navController: NavController) {
                 }
                 "Bars" -> {
                     Bars()
+                }
+                "Adaptive" ->{
+                    Adaptive()
                 }
             }
         }
@@ -678,7 +686,7 @@ fun AlertDialogs() {
     }
 }
 
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
 private fun Bars() {
     Box(
@@ -786,16 +794,42 @@ private fun Bars() {
 }
 
 @Composable
-fun Posts(arrayPosts:Array<PostModel>) {
-    LazyRow(
+fun Posts(arrayPosts:Array<PostModel>, adaptive:String) {
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
     ){
         items(arrayPosts){ post->
-            PostCard(id = post.id, title = post.title, text = post.text, image = post.image)
+            when(adaptive){
+                "PhoneP" -> {
+                    PostCardCompact(id = post.id, title = post.title, text = post.text, image = post.image)
+                }
+                "PhoneL" -> {
+                    PostCard(id = post.id, title = post.title, text = post.text, image = post.image)
+                }
+            }
+
         }
     }
 }
+
+//@Preview(showBackground = true)
+//@Composable
+//fun prueba(){
+//    var post = arrayOf(
+//        PostModel(1,"Title 1", "Text 1", painterResource(id = R.drawable.andcat)),
+//        PostModel(2,"Title 2", "Text 2", painterResource(id = R.drawable.andcat)),
+//        PostModel(3,"Title 3", "Text 3", painterResource(id = R.drawable.andcat)),
+//        PostModel(4,"Title 4", "Text 4", painterResource(id = R.drawable.andcat)),
+//        PostModel(5,"Title 5", "Text 5", painterResource(id = R.drawable.andcat)),
+//        PostModel(6,"Title 6", "Text 6", painterResource(id = R.drawable.andcat)),
+//        PostModel(7,"Title 7", "Text 7", painterResource(id = R.drawable.andcat)),
+//        PostModel(8,"Title 8", "Text 8", painterResource(id = R.drawable.andcat)),
+//        PostModel(9,"Title 9", "Text 9", painterResource(id = R.drawable.andcat)),
+//        PostModel(10,"Title 10", "Text 10", painterResource(id = R.drawable.andcat)),
+//    )
+//    Posts(arrayPosts = post, adaptive = "PhoneL")
+//}
 
 @Composable
 fun PostsGrid(arrayPosts:Array<PostModel>){
@@ -810,3 +844,42 @@ fun PostsGrid(arrayPosts:Array<PostModel>){
     }
 }
 
+@Preview(showBackground = true, device = "spec:id=reference_tablet,shape=Normal,width=1280,height=800,unit=dp,dpi=240")
+@Composable
+fun Adaptive() {
+    var WindowSize = currentWindowAdaptiveInfo().windowSizeClass
+    var height = currentWindowAdaptiveInfo().windowSizeClass.windowHeightSizeClass
+    var width = currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass
+
+    // Compact width < 600dp Phone portrait
+    // 600dp <= Medium width < 840dp Tablets portrait
+    // Expanded width >= 840dp Tablet landscape
+
+    // Compact height < 480dp Phone Landscape
+    // 480 <= Medium height < 900dp tablet Landscape o telephone en portrait
+    // Expanded height > 900dp tablet en portrait
+
+    var post = arrayOf(
+        PostModel(1,"Title 1", "Text 1", painterResource(id = R.drawable.andcat)),
+        PostModel(2,"Title 2", "Text 2", painterResource(id = R.drawable.andcat)),
+        PostModel(3,"Title 3", "Text 3", painterResource(id = R.drawable.andcat)),
+        PostModel(4,"Title 4", "Text 4", painterResource(id = R.drawable.andcat)),
+        PostModel(5,"Title 5", "Text 5", painterResource(id = R.drawable.andcat)),
+        PostModel(6,"Title 6", "Text 6", painterResource(id = R.drawable.andcat)),
+        PostModel(7,"Title 7", "Text 7", painterResource(id = R.drawable.andcat)),
+        PostModel(8,"Title 8", "Text 8", painterResource(id = R.drawable.andcat)),
+        PostModel(9,"Title 9", "Text 9", painterResource(id = R.drawable.andcat)),
+        PostModel(10,"Title 10", "Text 10", painterResource(id = R.drawable.andcat)),
+    )
+
+    if (width == WindowWidthSizeClass.COMPACT){
+        Posts(arrayPosts = post, "PhoneP")
+    }else if(height == WindowHeightSizeClass.COMPACT) {
+        Posts(arrayPosts = post, "PhoneL")
+    }else{
+        Posts(arrayPosts = post, "PhoneL")
+    }
+
+    //Text(text = WindowSize.toString())
+
+}
