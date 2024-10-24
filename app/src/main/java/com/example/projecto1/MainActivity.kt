@@ -59,6 +59,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.projecto1.ui.screens.ComponentsScreen
 import com.example.projecto1.ui.screens.HomeScreen
+import com.example.projecto1.ui.screens.LoginScreen
 import com.example.projecto1.ui.screens.MenuScreen
 
 class MainActivity : ComponentActivity() {
@@ -67,16 +68,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ComposeMultiScreenApp()
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -231,7 +222,7 @@ fun Picture() {
         )
     }
 }
-/*
+
 @Preview(showBackground = true)
 @Composable
 fun Content1() {
@@ -277,7 +268,7 @@ fun Content2() {
     ) {
         Row {
             Column (
-                verticalArrangement = Arrangement.Center
+                //verticalArrangement = Arrangement.Center
                 //modifier = Modifier.fillMaxHeight()
             ) {
                 Image(
@@ -311,7 +302,7 @@ fun Content2() {
         }
     }
 }
-
+/*
 @Preview(showBackground = true)
 @Composable
 fun BoxExample1(){
@@ -410,9 +401,10 @@ fun ComposeMultiScreenApp(){
 
 @Composable
 fun SetupNavGraph (navController: NavHostController){
-    NavHost(navController = navController, startDestination = "menu"){
+    NavHost(navController = navController, startDestination = "login"){
         composable("menu"){ MenuScreen(navController) }
         composable("home"){ HomeScreen(navController) }
         composable("components"){ ComponentsScreen(navController)}
+        composable("login"){ LoginScreen(navController) }
     }
 }

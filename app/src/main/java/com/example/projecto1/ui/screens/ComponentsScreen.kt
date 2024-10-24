@@ -686,7 +686,7 @@ fun AlertDialogs() {
     }
 }
 
-//@Preview(showBackground = true)
+@Preview(showBackground = true)
 @Composable
 private fun Bars() {
     Box(
