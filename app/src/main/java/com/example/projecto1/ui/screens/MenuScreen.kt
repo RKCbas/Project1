@@ -20,5 +20,9 @@ fun MenuScreen(navController: NavController){
         Button(onClick = {navController.navigate("components")}) {
             Text(text = "Components")
         }
+        Button(onClick = {navController.navigate("secondPlaneProcess")}){
+            Text(text = "Proceso en segundo plano")
+        }
+
     }
 }

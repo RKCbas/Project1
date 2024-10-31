@@ -60,6 +60,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.projecto1.ui.screens.ComponentsScreen
 import com.example.projecto1.ui.screens.HomeScreen
 import com.example.projecto1.ui.screens.MenuScreen
+import com.example.projecto1.ui.screens.SecondPlaneProcess
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,16 +68,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ComposeMultiScreenApp()
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -411,8 +402,9 @@ fun ComposeMultiScreenApp(){
 @Composable
 fun SetupNavGraph (navController: NavHostController){
     NavHost(navController = navController, startDestination = "menu"){
-        composable("menu"){ MenuScreen(navController) }
-        composable("home"){ HomeScreen(navController) }
-        composable("components"){ ComponentsScreen(navController)}
+        composable("menu") { MenuScreen(navController) }
+        composable("home") { HomeScreen(navController) }
+        composable("components") { ComponentsScreen(navController)}
+        composable("secondPlaneProcess") { SecondPlaneProcess() }
     }
 }
