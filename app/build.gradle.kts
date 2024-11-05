@@ -69,6 +69,23 @@ dependencies {
     implementation("androidx.compose.material3:material3-window-size-class-android:1.3.0")
     implementation("androidx.activity:activity:1.9.3")
     implementation("androidx.compose.runtime:runtime-livedata:1.7.4")
+
+    //maps
+    implementation("com.google.maps.android:maps-compose:2.11.2")
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
+
+    //places
+    implementation("com.google.android.libraries.places:places:4.0.0")
+
+    //navigation
+    implementation(libs.androidx.navigation.compose)
+
+    //Biometrics
+    implementation("androidx.biometric:biometric:1.1.0")
+    implementation(libs.androidx.appcompat)
+
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

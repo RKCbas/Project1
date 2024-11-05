@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -57,17 +58,19 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 //import androidx.navigation.compose.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.projecto1.ui.screens.BiometricsScreen
+import com.example.projecto1.ui.screens.CalendarAndContactsScreen
 import com.example.projecto1.ui.screens.ComponentsScreen
 import com.example.projecto1.ui.screens.HomeScreen
 import com.example.projecto1.ui.screens.MenuScreen
 import com.example.projecto1.ui.screens.SecondPlaneProcess
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            ComposeMultiScreenApp()
+            ComposeMultiScreenApp(this)
 
 
 
@@ -390,21 +393,23 @@ fun clickAction(element: String = "Elemento") {
 }
 
 
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
-fun ComposeMultiScreenApp(){
+fun ComposeMultiScreenApp(activity: AppCompatActivity){
     val navController = rememberNavController()
     Surface (color = Color.White) {
-        SetupNavGraph(navController = navController)
+        SetupNavGraph(navController = navController, activity)
     }
 }
 
 @Composable
-fun SetupNavGraph (navController: NavHostController){
+fun SetupNavGraph (navController: NavHostController, activity: AppCompatActivity){
     NavHost(navController = navController, startDestination = "menu"){
         composable("menu") { MenuScreen(navController) }
         composable("home") { HomeScreen(navController) }
         composable("components") { ComponentsScreen(navController)}
         composable("secondPlaneProcess") { SecondPlaneProcess() }
+        composable("CalendarContacts") { CalendarAndContactsScreen() }
+        composable("Biometrics") { BiometricsScreen(activity) }
     }
 }

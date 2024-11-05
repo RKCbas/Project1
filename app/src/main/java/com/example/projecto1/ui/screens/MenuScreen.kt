@@ -12,7 +12,10 @@ import androidx.navigation.NavController
 
 @Composable
 fun MenuScreen(navController: NavController){
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(top = 10.dp)
+    ) {
         Text(text = "This is MenuScreen", modifier = Modifier.padding(top = 20.dp))
         Button(onClick = {navController.navigate("home")}) {
             Text(text = "Home")
@@ -22,6 +25,12 @@ fun MenuScreen(navController: NavController){
         }
         Button(onClick = {navController.navigate("secondPlaneProcess")}){
             Text(text = "Proceso en segundo plano")
+        }
+        Button(onClick = { navController.navigate("CalendarContacts") }) {
+            Text(text = "Calendario y Contactos")
+        }
+        Button(onClick = { navController.navigate("Biometrics") }) {
+            Text(text = "Autentificacion por biometricos")
         }
 
     }
