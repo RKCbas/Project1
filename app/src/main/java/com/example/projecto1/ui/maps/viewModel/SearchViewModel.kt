@@ -1,4 +1,4 @@
-package com.example.projecto1.ui.viewModel
+package com.example.projecto1.ui.maps.viewModel
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -14,10 +14,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.URL
 
-class SearchViewModel:ViewModel() {
+class SearchViewModel: ViewModel() {
 
     var lat by mutableDoubleStateOf(0.0)
-        private set
+        private set // significa que solo puede ser modificada dentro de esta clase
     var long by mutableDoubleStateOf(0.0)
         private set
     var address by mutableStateOf("")
@@ -27,25 +27,23 @@ class SearchViewModel:ViewModel() {
 
     fun getLocation(search: String){
         viewModelScope.launch {
-            val apiKey = "AIzaSyA4uRUwSHcbfQRuEn2By0U0-oFPy73aoi4"
+            val apikey = "AIzaSyA4uRUwSHcbfQRuEn2By0U0-oFPy73aoi4"
 
-            val url = "https://maps.googleapis.com/maps/api/geocode/json?address=$address&key=$apiKey"
-            val response = withContext(Dispatchers.IO){
-                URL(url).readText()
+            val url = "https://maps.googleapis.com/maps/api/geocode/json?address=$search&key=$apikey"
+            val response = withContext(Dispatchers.IO){ //Solicitud HTTP de la API en un hilo de entrada/salida (IO)
+                URL(url).readText() // crea una conexión HTTP con la URL especificada y lee la respuesta como una cadena de texto (JSON).
             }
+            //Convierte la respuesta JSON en un objeto GoogleGeoResult utilizando la biblioteca Gson.
             val results = Gson().fromJson(response, GoogleGeoResult::class.java)
 
-            if (results.results.isNotEmpty()) {
-                show = true
+            if (results.results.isNotEmpty()){
+                show = true //para indicar que hay datos disponibles
                 lat = results.results[0].geometry.location.lat
                 long = results.results[0].geometry.location.lng
                 address = results.results[0].formatted_address
             }else{
-                Log.d("fail", "no funciona asi")
+                Log.d("Fail", "No funciona asi")
             }
-
         }
     }
-
-
 }

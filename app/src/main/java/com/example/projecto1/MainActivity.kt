@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -38,6 +39,7 @@ import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.Cyan
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.VerticalAlignmentLine
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -53,25 +55,31 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import com.example.projecto1.ui.theme.Projecto1Theme
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 //import androidx.navigation.compose.NavHostController
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.projecto1.ui.maps.viewModel.SearchViewModel
+import com.example.projecto1.ui.maps.views.HomeView
+import com.example.projecto1.ui.maps.views.MapsSearchView
 import com.example.projecto1.ui.screens.BiometricsScreen
 import com.example.projecto1.ui.screens.CalendarAndContactsScreen
+import com.example.projecto1.ui.screens.CameraScreen
 import com.example.projecto1.ui.screens.ComponentsScreen
 import com.example.projecto1.ui.screens.HomeScreen
 import com.example.projecto1.ui.screens.MenuScreen
-import com.example.projecto1.ui.screens.SecondPlaneProcess
+
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            ComposeMultiScreenApp(this)
-
+            val viewModel: SearchViewModel by viewModels()
+            ComposeMultiScreenApp(this, viewModel)
 
 
 //            Column(
@@ -395,21 +403,40 @@ fun clickAction(element: String = "Elemento") {
 
 //@Preview(showBackground = true)
 @Composable
-fun ComposeMultiScreenApp(activity: AppCompatActivity){
+fun ComposeMultiScreenApp(activity: AppCompatActivity, viewModel: SearchViewModel) {
     val navController = rememberNavController()
-    Surface (color = Color.White) {
-        SetupNavGraph(navController = navController, activity)
+    Surface(color = Color.White) {
+        SetupNavGraph(navController = navController, activity, viewModel)
     }
 }
 
 @Composable
-fun SetupNavGraph (navController: NavHostController, activity: AppCompatActivity){
-    NavHost(navController = navController, startDestination = "menu"){
+fun SetupNavGraph(
+    navController: NavHostController,
+    activity: AppCompatActivity,
+    viewModel: SearchViewModel
+) {
+    val context = LocalContext.current
+    NavHost(navController = navController, startDestination = "menu") {
         composable("menu") { MenuScreen(navController) }
         composable("home") { HomeScreen(navController) }
-        composable("components") { ComponentsScreen(navController)}
-        composable("secondPlaneProcess") { SecondPlaneProcess() }
+        composable("components") { ComponentsScreen(navController) }
+        composable("homeMaps") { HomeView(navController = navController, searchVM = viewModel) }
+        composable(
+            "MapsSearchView/{lat}/{long}/{address}",
+            arguments = listOf(
+                navArgument("lat") { type = NavType.FloatType },
+                navArgument("long") { type = NavType.FloatType },
+                navArgument("address") { type = NavType.StringType }
+            )
+        ) {
+            val lat = it.arguments?.getFloat("lat") ?: 0.0
+            val long = it.arguments?.getFloat("long") ?: 0.0
+            val address = it.arguments?.getString("address") ?: ""
+            MapsSearchView(lat.toDouble(), long.toDouble(), address )
+        }
         composable("CalendarContacts") { CalendarAndContactsScreen() }
         composable("Biometrics") { BiometricsScreen(activity) }
+        composable("Camera") { CameraScreen(context = context) }
     }
 }

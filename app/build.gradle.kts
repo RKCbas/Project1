@@ -84,7 +84,9 @@ dependencies {
     implementation("androidx.biometric:biometric:1.1.0")
     implementation(libs.androidx.appcompat)
 
-
+    //camara
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+    implementation("io.coil-kt:coil-compose:2.0.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
