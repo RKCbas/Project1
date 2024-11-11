@@ -21,13 +21,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.projecto1.ui.Biometrics.BiometricPromtManager
-import com.example.projecto1.ui.Biometrics.BiometricPromtManager.BiometricResult
+import com.example.projecto1.ui.Biometrics.BiometricPromptManager
+import com.example.projecto1.ui.Biometrics.BiometricPromptManager.BiometricResult
 
 @Composable
 fun BiometricsScreen (activity: AppCompatActivity){
     val promptManager by lazy {
-        BiometricPromtManager(activity)
+        BiometricPromptManager(activity)
     }
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerpadding ->

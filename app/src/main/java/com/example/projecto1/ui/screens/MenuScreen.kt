@@ -1,6 +1,7 @@
 package com.example.projecto1.ui.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -14,6 +15,7 @@ import androidx.navigation.NavController
 fun MenuScreen(navController: NavController){
     Column(modifier = Modifier
         .fillMaxWidth()
+        .fillMaxHeight()
         .padding(top = 10.dp)
     ) {
         Text(text = "This is MenuScreen", modifier = Modifier.padding(top = 20.dp))
