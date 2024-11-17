@@ -62,31 +62,46 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.adaptive.android)
     //implementation(libs.androidx.navigation.runtime.ktx)
-    implementation("androidx.work:work-runtime-ktx:2.9.1")
-    implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.compose.material3:material3:1.3.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
-    implementation("androidx.compose.material3:material3-window-size-class-android:1.3.0")
-    implementation("androidx.activity:activity:1.9.3")
-    implementation("androidx.compose.runtime:runtime-livedata:1.7.4")
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.core.ktx.v1131)
+    implementation(libs.material3)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation("androidx.compose.material3:material3-window-size-class-android:1.3.1")
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.runtime.livedata)
 
     //maps
-    implementation("com.google.maps.android:maps-compose:2.11.2")
-    implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation(libs.maps.compose)
+    implementation(libs.play.services.maps)
 
     //places
-    implementation("com.google.android.libraries.places:places:4.0.0")
+    implementation(libs.places)
 
     //navigation
     implementation(libs.androidx.navigation.compose)
 
     //Biometrics
-    implementation("androidx.biometric:biometric:1.1.0")
+    implementation(libs.androidx.biometric)
     implementation(libs.androidx.appcompat)
 
     //camara
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
-    implementation("io.coil-kt:coil-compose:2.0.0")
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    //implementation("io.coil-kt:coil-compose:2.0.0")
+
+    implementation(libs.retrofit2.kotlinx.serialization.converter)
+    implementation(libs.retrofit)
+    implementation(libs.okhttp)
+    implementation(libs.coil.compose)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.converter.gson)
+
+    //network
+    implementation(libs.ui)
+    implementation(libs.androidx.material)
+    implementation(libs.ui.tooling.preview)
+    implementation(libs.androidx.activity.compose.v193)
+    implementation(libs.ui.tooling)
+    implementation(libs.coil.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

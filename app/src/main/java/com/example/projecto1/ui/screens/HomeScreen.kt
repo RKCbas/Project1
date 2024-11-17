@@ -1,6 +1,7 @@
 package com.example.projecto1.ui.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -12,7 +13,7 @@ import androidx.navigation.NavController
 
 @Composable
 fun HomeScreen(navController: NavController){
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = Modifier.fillMaxSize()) {
         Text(text = "This is the HomeScreen", modifier = Modifier.padding(top = 20.dp))
         Button(onClick = {navController.navigate("menu")}) {
 

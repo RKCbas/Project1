@@ -70,6 +70,7 @@ import com.example.projecto1.ui.screens.CalendarAndContactsScreen
 import com.example.projecto1.ui.screens.CameraScreen
 import com.example.projecto1.ui.screens.ComponentsScreen
 import com.example.projecto1.ui.screens.HomeScreen
+import com.example.projecto1.ui.screens.LoginScreen
 import com.example.projecto1.ui.screens.MenuScreen
 
 
@@ -396,7 +397,7 @@ fun BoxExample2(){
 */
 //git test2
 
-fun clickAction(element: String = "Elemento") {
+fun clickAction(element: String = "Element") {
     println("$element Clicked")
 }
 
@@ -417,7 +418,7 @@ fun SetupNavGraph(
     viewModel: SearchViewModel
 ) {
     val context = LocalContext.current
-    NavHost(navController = navController, startDestination = "menu") {
+    NavHost(navController = navController, startDestination = "login") {
         composable("menu") { MenuScreen(navController) }
         composable("home") { HomeScreen(navController) }
         composable("components") { ComponentsScreen(navController) }
@@ -438,5 +439,7 @@ fun SetupNavGraph(
         composable("CalendarContacts") { CalendarAndContactsScreen() }
         composable("Biometrics") { BiometricsScreen(activity) }
         composable("Camera") { CameraScreen(context = context) }
+        composable("login") { LoginScreen(navController = navController) }
+
     }
 }

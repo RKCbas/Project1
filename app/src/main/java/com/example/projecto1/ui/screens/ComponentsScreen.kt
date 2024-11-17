@@ -238,7 +238,9 @@ fun Buttons() {
         verticalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxSize()
     ) {
-        Button(onClick = {}) {
+        Button(
+            onClick = {}
+        ) {
             Text("Filled")
         }
         FilledTonalButton(onClick = {}) {
