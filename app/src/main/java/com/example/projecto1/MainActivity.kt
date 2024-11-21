@@ -1,11 +1,15 @@
 package com.example.projecto1
 
 import android.media.Image
+import android.net.ConnectivityManager
+import android.net.wifi.WifiManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -62,9 +66,14 @@ import androidx.navigation.compose.composable
 //import androidx.navigation.compose.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.work.BackoffPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.projecto1.ui.maps.viewModel.SearchViewModel
 import com.example.projecto1.ui.maps.views.HomeView
 import com.example.projecto1.ui.maps.views.MapsSearchView
+import com.example.projecto1.network.NetworkMonitor
+import com.example.projecto1.ui.background.CustomWorker
 import com.example.projecto1.ui.screens.BiometricsScreen
 import com.example.projecto1.ui.screens.CalendarAndContactsScreen
 import com.example.projecto1.ui.screens.CameraScreen
@@ -72,15 +81,58 @@ import com.example.projecto1.ui.screens.ComponentsScreen
 import com.example.projecto1.ui.screens.HomeScreen
 import com.example.projecto1.ui.screens.LoginScreen
 import com.example.projecto1.ui.screens.MenuScreen
+import java.time.Duration
 
 
 class MainActivity : AppCompatActivity() {
+
+
+    //--------------------------------------------
+    //Internet
+    // Inicializamos los objetos que vamos a usar para el monitoreo de la red
+    private lateinit var wifiManager: WifiManager  // Para gestionar el Wi-Fi
+    private lateinit var connectivityManager: ConnectivityManager  // Para gestionar las conexiones de red
+    private lateinit var networkMonitor: NetworkMonitor  // Clase que monitorea el estado de la red
+    //--------------------------------------------
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge() // Colors also baterry and stuff bar
+
+        //WorkManager
+        //------------------------------------------
+        val workRequest = OneTimeWorkRequestBuilder<CustomWorker>()
+            .setInitialDelay(Duration.ofSeconds(10))
+            .setBackoffCriteria(
+                backoffPolicy = BackoffPolicy.LINEAR,
+                duration = Duration.ofSeconds(15)
+            )
+            .build()
+        WorkManager.getInstance(applicationContext).enqueue(workRequest)
+        //By adding this, message "Hello from worker!" should be seen from LogCat
+
+        //--------------------------------------------
+
+
+        //-------------------------------------------
+        //Internet
+        // Obtenemos los servicios necesarios para controlar Wi-Fi y la conectividad de red
+        wifiManager = getSystemService(WIFI_SERVICE) as WifiManager
+        connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        // Creamos una instancia de NetworkMonitor, pasando los servicios y la actividad actual
+        networkMonitor = NetworkMonitor(wifiManager, connectivityManager, this)
+
+
+        //---------------------------------------------
+
+
         enableEdgeToEdge()
         setContent {
             val viewModel: SearchViewModel by viewModels()
-            ComposeMultiScreenApp(this, viewModel)
+            ComposeMultiScreenApp(this, viewModel, networkMonitor)
 
 
 //            Column(
@@ -404,10 +456,14 @@ fun clickAction(element: String = "Element") {
 
 //@Preview(showBackground = true)
 @Composable
-fun ComposeMultiScreenApp(activity: AppCompatActivity, viewModel: SearchViewModel) {
+fun ComposeMultiScreenApp(
+    activity: AppCompatActivity,
+    viewModel: SearchViewModel,
+    networkMonitor: NetworkMonitor
+) {
     val navController = rememberNavController()
     Surface(color = Color.White) {
-        SetupNavGraph(navController = navController, activity, viewModel)
+        SetupNavGraph(navController = navController, activity, viewModel, networkMonitor)
     }
 }
 
@@ -415,7 +471,8 @@ fun ComposeMultiScreenApp(activity: AppCompatActivity, viewModel: SearchViewMode
 fun SetupNavGraph(
     navController: NavHostController,
     activity: AppCompatActivity,
-    viewModel: SearchViewModel
+    viewModel: SearchViewModel,
+    networkMonitor: NetworkMonitor
 ) {
     val context = LocalContext.current
     NavHost(navController = navController, startDestination = "login") {
@@ -423,6 +480,7 @@ fun SetupNavGraph(
         composable("home") { HomeScreen(navController) }
         composable("components") { ComponentsScreen(navController) }
         composable("homeMaps") { HomeView(navController = navController, searchVM = viewModel) }
+        composable("network") { networkMonitor.NetworkMonitorScreen(navController = navController) }
         composable(
             "MapsSearchView/{lat}/{long}/{address}",
             arguments = listOf(
@@ -434,7 +492,7 @@ fun SetupNavGraph(
             val lat = it.arguments?.getFloat("lat") ?: 0.0
             val long = it.arguments?.getFloat("long") ?: 0.0
             val address = it.arguments?.getString("address") ?: ""
-            MapsSearchView(lat.toDouble(), long.toDouble(), address )
+            MapsSearchView(lat.toDouble(), long.toDouble(), address)
         }
         composable("CalendarContacts") { CalendarAndContactsScreen() }
         composable("Biometrics") { BiometricsScreen(activity) }
