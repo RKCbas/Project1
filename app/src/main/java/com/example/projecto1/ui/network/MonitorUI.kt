@@ -1,4 +1,4 @@
-package com.example.projecto1.network
+package com.example.projecto1.ui.network
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

@@ -1,4 +1,4 @@
-package com.example.projecto1.network
+package com.example.projecto1.ui.network
 
 import android.Manifest
 import android.content.pm.PackageManager

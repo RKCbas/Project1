@@ -102,6 +102,7 @@ dependencies {
     implementation(libs.androidx.activity.compose.v193)
     implementation(libs.ui.tooling)
     implementation(libs.coil.compose)
+    implementation(libs.androidx.room.runtime.android)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

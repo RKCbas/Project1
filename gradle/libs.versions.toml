@@ -32,6 +32,8 @@ ui = "1.7.5"
 uiTooling = "1.7.5"
 uiToolingPreview = "1.7.5"
 workRuntimeKtx = "2.9.1"
+roomKtx = "2.6.1"
+roomRuntimeAndroid = "2.7.0-alpha11"
 
 [libraries]
 androidx-activity-compose-v193 = { module = "androidx.activity:activity-compose", version.ref = "activityComposeVersion" }
@@ -72,6 +74,8 @@ retrofit2-kotlinx-serialization-converter = { module = "com.jakewharton.retrofit
 ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiTooling" }
 ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "uiToolingPreview" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
+androidx-room-runtime-android = { group = "androidx.room", name = "room-runtime-android", version.ref = "roomRuntimeAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -8,3 +8,4 @@ class ServiceModel(
     var description: String = "",
     var imageURL: String? = null
 )
+

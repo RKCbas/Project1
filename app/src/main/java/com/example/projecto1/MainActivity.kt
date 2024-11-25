@@ -72,7 +72,7 @@ import androidx.work.WorkManager
 import com.example.projecto1.ui.maps.viewModel.SearchViewModel
 import com.example.projecto1.ui.maps.views.HomeView
 import com.example.projecto1.ui.maps.views.MapsSearchView
-import com.example.projecto1.network.NetworkMonitor
+import com.example.projecto1.ui.network.NetworkMonitor
 import com.example.projecto1.ui.background.CustomWorker
 import com.example.projecto1.ui.screens.BiometricsScreen
 import com.example.projecto1.ui.screens.CalendarAndContactsScreen
@@ -80,6 +80,7 @@ import com.example.projecto1.ui.screens.CameraScreen
 import com.example.projecto1.ui.screens.ComponentsScreen
 import com.example.projecto1.ui.screens.HomeScreen
 import com.example.projecto1.ui.screens.LoginScreen
+import com.example.projecto1.ui.screens.ManageServiceScreen
 import com.example.projecto1.ui.screens.MenuScreen
 import java.time.Duration
 
@@ -498,6 +499,9 @@ fun SetupNavGraph(
         composable("Biometrics") { BiometricsScreen(activity) }
         composable("Camera") { CameraScreen(context = context) }
         composable("login") { LoginScreen(navController = navController) }
-
+        composable("manage-service/{serviceId}"){backStackEntry ->
+            val serviceId = backStackEntry.arguments?.getString("serviceId")
+            ManageServiceScreen(navController, serviceId = serviceId)
+        }
     }
 }
