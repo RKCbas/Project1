@@ -15,6 +15,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,12 +29,16 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.example.projecto1.data.controller.LoginState
+import com.example.projecto1.data.controller.LoginViewModel
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
+    val loginState by loginViewModel.loginState.collectAsState()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly,
@@ -41,18 +47,20 @@ fun LoginScreen(navController: NavController) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        LoginForm(navController)
+        LoginForm(navController, loginViewModel, loginState)
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun ShowLoginForm() {
-    LoginForm(navController = rememberNavController())
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun ShowLoginForm() {
+//    var loginViewModel = viewModel()
+//    val loginState by loginViewModel.loginState.collectAsState()
+//    LoginForm(navController = rememberNavController(), loginViewModel, loginState)
+//}
 
 @Composable
-fun LoginForm(navController: NavController) {
+fun LoginForm(navController: NavController, loginViewModel: LoginViewModel, loginState: LoginState) {
 
     var user by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -69,12 +77,11 @@ fun LoginForm(navController: NavController) {
             modifier = Modifier
                 .padding(20.dp)
         ) {
-            //Cargar recursos desde una URL
-            /*AsyncImage(
-                model  ="https://logoscarcas.net/wp-content/uploads/2020/12/GitHub-",
-                contentDescription ="Github logo",
-                contentScale=ContentScale.Fit
-            )*/
+            AsyncImage(
+                model = "https://marketizados.com/wp-content/uploads/2023/11/765900ba9-article-200807-github-gitguardbody-text.jpg",
+                contentDescription = "Github logo",
+                contentScale = ContentScale.Fit
+            )
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -99,7 +106,7 @@ fun LoginForm(navController: NavController) {
                     .fillMaxWidth()
                     .padding(0.dp, 10.dp),
                 onClick = {
-                    navController.navigate("home")
+                    loginViewModel.login(user, password)
                 }
             ) {
                 Text("LOG IN")
@@ -110,11 +117,33 @@ fun LoginForm(navController: NavController) {
                     .fillMaxWidth()
                     .padding(0.dp, 10.dp),
                 onClick = {
-                    navController.navigate("home")
+                    navController.navigate("menu")
                 }
             ) {
                 Text("CREATE AN ACCOUNT")
             }
+
+            when (loginState) {
+                is LoginState.Idle -> {}
+                is LoginState.Loading -> {
+                    Text("Loading...", color = Color.White, modifier = Modifier.align(Alignment.CenterHorizontally))
+                }
+                is LoginState.Success -> {
+                    LaunchedEffect(Unit) {
+                        navController.navigate("home") {
+                            popUpTo("login") { inclusive = true }
+                        }
+                    }
+                }
+                is LoginState.Error -> {
+                    Text(
+                        text = (loginState as LoginState.Error).message,
+                        color = Color.Red,
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                }
+            }
+
         }
     }
 }

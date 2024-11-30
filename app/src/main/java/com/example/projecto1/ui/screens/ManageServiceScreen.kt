@@ -18,6 +18,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,51 +30,85 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.room.util.copy
+
 
 import com.example.projecto1.R
 import com.example.projecto1.data.model.ServiceModel
 import com.example.projecto1.ui.Components.TopBar
 import com.example.projecto1.data.controller.ServiceViewModel
+import com.example.projecto1.data.dao.ServiceDao
+import com.example.projecto1.data.database.AppDatabase
+import com.example.projecto1.data.database.DatabaseProvider
+import com.example.projecto1.data.model.toServiceEntity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun ManageServiceScreen(
-    navController : NavController,
+    navController: NavController,
     serviceId: String?,
     viewModel: ServiceViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
-){
-    val service = remember {mutableStateOf(ServiceModel())}
-    val context = LocalContext.current
-    var bar_title by remember {mutableStateOf("Create new service")}
+) {
 
-    if(serviceId != null && serviceId != "0"){
+    val db: AppDatabase = DatabaseProvider.getDatabase(LocalContext.current)
+    val serviceDao = db.serviceDao()
+
+    val context = LocalContext.current
+
+    val service = remember { mutableStateOf(ServiceModel()) }
+    var bar_title by remember { mutableStateOf("Create new service") }
+
+    if (serviceId != null && serviceId != "0") {
         bar_title = "Update service"
-        viewModel.showService(serviceId.toInt()){ response ->
-            if(response.isSuccessful){
-                service.value.name = response.body()?.name.toString()
-                service.value.username = response.body()?.username.toString()
-                service.value.password = response.body()?.password.toString()
-                service.value.description = response.body()?.description.toString()
-            } else {
-                Toast.makeText(
-                    context,
-                    "Failed to load a service",
-                    Toast.LENGTH_SHORT
-                ).show()
+
+        LaunchedEffect(Unit) {
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val tempServiceEntity = serviceDao.show(serviceId.toInt())
+                    service.value.id = tempServiceEntity.id
+                    service.value.name = tempServiceEntity.name
+                    service.value.username = tempServiceEntity.username
+                    service.value.password = tempServiceEntity.password
+                    service.value.description = tempServiceEntity.description
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        context,
+                        "Failed to load a service",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    println(e)
+                }
             }
         }
+
+
+//        viewModel.showService(serviceId.toInt()){ response ->
+//            if(response.isSuccessful){
+//                service.value.name = response.body()?.name.toString()
+//                service.value.username = response.body()?.username.toString()
+//                service.value.password = response.body()?.password.toString()
+//                service.value.description = response.body()?.description.toString()
+//            } else {
+//                Toast.makeText(
+//                    context,
+//                    "Failed to load a service",
+//                    Toast.LENGTH_SHORT
+//                ).show()
+//            }
+//        }
     }
 
     Scaffold(
-        topBar = {TopBar(bar_title, navController, true)},
-    ){ innerPadding ->
+        topBar = { TopBar(bar_title, navController, true) },
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(colorResource(R.color.black))
                 .padding(innerPadding)
-        ){
+        ) {
             Spacer(modifier = Modifier.padding(0.dp, 5.dp))
 
             OutlinedTextField(
@@ -170,7 +205,10 @@ fun ManageServiceScreen(
                         password = service.value.password,
                         description = service.value.description
                     )
-                    save(viewModel, context, serviceTemp, serviceId)
+                    save(viewModel, context, serviceTemp, serviceId, db)
+                    navController.navigate("home") {
+                        popUpTo("login") { inclusive = true }
+                    }
                 }
             ) {
                 Text(if (serviceId == "0") "CREATE SERVICE" else "SAVE CHANGES")
@@ -191,7 +229,7 @@ fun ManageServiceScreen(
                         .padding(0.dp, 10.dp),
                     shape = CutCornerShape(4.dp),
                     onClick = {
-                        delete(viewModel, context, serviceId, navController)
+                        delete(viewModel, context, serviceId, navController, serviceDao)
                     }
                 ) {
                     Text("DELETE")
@@ -205,10 +243,11 @@ fun save(
     viewModel: ServiceViewModel,
     context: Context,
     service: ServiceModel,
-    serviceId: String?
+    serviceId: String?,
+    db: AppDatabase
 ) {
     if (serviceId == "0") {
-        viewModel.createService(service) { response ->
+        viewModel.createService(service, db) { response ->
             if (response.isSuccessful) {
                 Toast.makeText(
                     context,
@@ -224,7 +263,7 @@ fun save(
             }
         }
     } else if (serviceId != null) {
-        viewModel.updateService(serviceId.toInt(), service) { response ->
+        viewModel.updateService(serviceId.toInt(), service, db) { response ->
             if (response.isSuccessful) {
                 Toast.makeText(
                     context,
@@ -246,11 +285,20 @@ fun delete(
     viewModel: ServiceViewModel,
     context: Context,
     serviceId: String?,
-    navController: NavController
+    navController: NavController,
+    serviceDao: ServiceDao
 ) {
     if (serviceId != null && serviceId != "0") {
         viewModel.deleteService(serviceId.toInt()) { response ->
             if (response.isSuccessful) {
+
+                //
+                CoroutineScope(Dispatchers.IO).launch {
+                    val service = serviceDao.show(serviceId.toInt())
+                    serviceDao.delete(service)
+                }
+                //
+
                 Toast.makeText(
                     context,
                     "Service deleted successfully",

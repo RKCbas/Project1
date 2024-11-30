@@ -1,11 +1,12 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.google.devtools.ksp")
 }
 
 android {
     namespace = "com.example.projecto1"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.projecto1"
@@ -102,7 +103,16 @@ dependencies {
     implementation(libs.androidx.activity.compose.v193)
     implementation(libs.ui.tooling)
     implementation(libs.coil.compose)
-    implementation(libs.androidx.room.runtime.android)
+    implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.ktx)
+
+
+//    implementation(libs.androidx.room.common)
+//    implementation(libs.androidx.room.ktx)
+
+    //new i
+    val room_version = "2.6.1"
+    ksp("androidx.room:room-compiler:$room_version")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

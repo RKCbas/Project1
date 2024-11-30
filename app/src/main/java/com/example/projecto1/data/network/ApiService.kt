@@ -1,5 +1,7 @@
 package com.example.projecto1.data.network
 
+import com.example.projecto1.data.model.LoginRequest
+import com.example.projecto1.data.model.LoginResponse
 import com.example.projecto1.data.model.ServiceModel
 import retrofit2.Response
 import retrofit2.http.Body
@@ -27,4 +29,9 @@ interface ApiService {
 
     @DELETE("service/{id}")
     suspend fun deleteService(@Path("id") id: Int): Response<ServiceModel>
+
+    //User Service
+    @POST("user")
+    suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
+
 }

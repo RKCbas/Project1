@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -69,6 +70,8 @@ import androidx.navigation.navArgument
 import androidx.work.BackoffPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import com.example.projecto1.data.database.AppDatabase
+import com.example.projecto1.data.database.DatabaseProvider
 import com.example.projecto1.ui.maps.viewModel.SearchViewModel
 import com.example.projecto1.ui.maps.views.HomeView
 import com.example.projecto1.ui.maps.views.MapsSearchView
@@ -97,10 +100,19 @@ class MainActivity : AppCompatActivity() {
     //--------------------------------------------
 
 
+    lateinit var database: AppDatabase
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge() // Colors also baterry and stuff bar
+        enableEdgeToEdge()
+
+        try {
+            database = DatabaseProvider.getDatabase(this)
+            Log.d("DB", "Database loaded Successfully")
+        } catch (e: Exception) {
+            Log.d("DB", "error $e")
+        }
 
         //WorkManager
         //------------------------------------------
@@ -499,7 +511,7 @@ fun SetupNavGraph(
         composable("Biometrics") { BiometricsScreen(activity) }
         composable("Camera") { CameraScreen(context = context) }
         composable("login") { LoginScreen(navController = navController) }
-        composable("manage-service/{serviceId}"){backStackEntry ->
+        composable("manage-service/{serviceId}") { backStackEntry ->
             val serviceId = backStackEntry.arguments?.getString("serviceId")
             ManageServiceScreen(navController, serviceId = serviceId)
         }

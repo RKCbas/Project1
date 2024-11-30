@@ -30,20 +30,36 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.projecto1.R
 import com.example.projecto1.data.controller.ServiceViewModel
+import com.example.projecto1.data.database.AppDatabase
+import com.example.projecto1.data.database.DatabaseProvider
+import com.example.projecto1.data.model.ServiceEntity
 import com.example.projecto1.data.model.ServiceModel
 import com.example.projecto1.ui.Components.ServiceCard
 import com.example.projecto1.ui.Components.ServiceDetailCard
 import com.example.projecto1.ui.Components.TopBar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen (navController: NavController, viewModel: ServiceViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
-    var serviceDetail by remember { mutableStateOf<ServiceModel?>(null) }
+fun HomeScreen(
+    navController: NavController,
+    viewModel: ServiceViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
+
+    val db: AppDatabase = DatabaseProvider.getDatabase(LocalContext.current)
+    var services by remember { mutableStateOf<List<ServiceEntity>>(emptyList()) }
+
+    val serviceDao = db.serviceDao()
+    var serviceDetail by remember { mutableStateOf<ServiceEntity?>(null) }
     var sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = false
     )
@@ -67,45 +83,61 @@ fun HomeScreen (navController: NavController, viewModel: ServiceViewModel = andr
                 Icon(Icons.Default.Add, contentDescription = "Add icon")
             }
         }
-    ){ innerPadding ->
+    ) { innerPadding ->
 
-        var services by remember {mutableStateOf<List<ServiceModel>>(emptyList())}
-        if(services.isEmpty()){
-            CircularProgressIndicator()
-        }
-        LaunchedEffect(Unit){
-            viewModel.getServices { response ->
-                if(response.isSuccessful){
-                    services = response.body()?: emptyList()
-                } else {
-                    println("failed to load posts")
-                }
+        LaunchedEffect(Unit) {
+            services = withContext(Dispatchers.IO) {
+                viewModel.getServices(db)
+                serviceDao.getAll()
             }
         }
 
         val listState = rememberLazyListState()
-        LazyColumn (
+        LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
                 .background(colorResource(R.color.black))
                 .fillMaxSize(),
             state = listState
-        ){
-            Log.d("debuginfo",services.toString())
-            items(services){ service ->
-                ServiceCard(service.id, service.name , service.username, service.imageURL,
+        ) {
+            Log.d("debuginfo", services.toString())
+            items(services) { service ->
+                ServiceCard(
+                    service.id, service.name, service.username, service.imageURL,
                     onButtonClick = {
-                        viewModel.showService(service.id){ response ->
-                            if(response.isSuccessful){
-                                serviceDetail = response.body()
-                            }
+
+//                        viewModel.showService(service.id){ response ->
+//                            if(response.isSuccessful){
+//                                serviceDetail = response.body()
+//
+//                            }
+//                        }
+//                        showBottomSheet = true
+
+                        CoroutineScope(Dispatchers.IO).launch {
+                            serviceDetail = serviceDao.show(service.id)
+                            println(service.id)
                         }
-                        showBottomSheet=true
+                        showBottomSheet = true
+
+//                        serviceDetail = serviceDao.show(service.id)
+//                        println("Button pressed")
+//                        serviceDetail?.let {
+//                            println(it.id)
+//                            println(it.name)
+//                            println(it.username)
+//                            println(it.password)
+//                        }
+//                        showBottomSheet=true
+
+                        //println(serviceDao.show(service.id))
+                        //showBottomSheet = true
+
                     }
                 )
             }
         }
-        if(showBottomSheet){
+        if (showBottomSheet) {
             ModalBottomSheet(
                 containerColor = colorResource(id = R.color.teal_200),
                 contentColor = Color.White,
@@ -116,9 +148,9 @@ fun HomeScreen (navController: NavController, viewModel: ServiceViewModel = andr
                 ServiceDetailCard(
                     id = serviceDetail?.id ?: 0,
                     name = serviceDetail?.name ?: "",
-                    username = serviceDetail?.username?:"",
-                    password = serviceDetail?.password?:"",
-                    description = serviceDetail?.description?:"",
+                    username = serviceDetail?.username ?: "",
+                    password = serviceDetail?.password ?: "",
+                    description = serviceDetail?.description ?: "",
                     imageURL = serviceDetail?.imageURL,
                     onEditClick = {
                         showBottomSheet = false
@@ -129,7 +161,6 @@ fun HomeScreen (navController: NavController, viewModel: ServiceViewModel = andr
         }
     }
 }
-
 
 
 /*
